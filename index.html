@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Facebook – log in or sign up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --blue:#1877f2;
+      --green:#42b72a;
+      --muted:#606770;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, Arial, sans-serif;background:#f0f2f5;color:#1c1e21}
+
+    .page{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px}
+    .container{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:1000px}
+
+    /* Left section */
+    .left{flex:1;min-width:280px;padding-right:40px}
+    .left h1{color:var(--blue);font-size:56px;margin:0;font-weight:700}
+    .left p{font-size:24px;margin-top:10px;color:#1c1e21;}
+
+    /* Right section */
+    .right{width:396px}
+    .card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1),0 8px 16px rgba(0,0,0,0.1)}
+    .input input{width:100%;padding:14px;font-size:17px;margin-bottom:12px;border:1px solid #dddfe2;border-radius:6px}
+    .btn{width:100%;padding:14px;border:none;border-radius:6px;font-size:20px;font-weight:600;cursor:pointer}
+    .btn-login{background:var(--blue);color:white;margin-bottom:12px}
+    .btn-create{background:var(--green);color:white;width:auto;padding:12px 16px;font-size:17px;margin:auto;display:block;margin-top:20px}
+    .forgot{text-align:center;margin-top:4px;font-size:14px}
+    .forgot a{color:var(--blue);text-decoration:none}
+    .divider{border-bottom:1px solid #dadde1;margin:20px 0}
+
+    .signup-popup{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;padding:20px}
+    .signup-card{background:#fff;border-radius:8px;width:432px;max-width:100%;box-shadow:0 12px 28px rgba(0,0,0,0.2);padding:20px;position:relative}
+    .signup-card h2{margin:0;font-size:32px;font-weight:700}
+    .signup-card p{margin:0;font-size:15px;color:var(--muted)}
+    .close{position:absolute;right:16px;top:12px;border:none;background:none;font-size:28px;cursor:pointer;color:#606770}
+    .row{display:flex;gap:10px;margin-bottom:10px}
+    .row input{flex:1}
+    .signup-card input, .signup-card select{width:100%;padding:10px;font-size:15px;border:1px solid #ccd0d5;border-radius:6px;margin-bottom:10px}
+    .gender{display:flex;gap:10px;margin-bottom:10px}
+    .gender label{flex:1;border:1px solid #ccd0d5;border-radius:6px;padding:8px;display:flex;justify-content:space-between;align-items:center}
+    .btn-signup{background:var(--green);color:white;border:none;border-radius:6px;padding:10px 20px;font-size:17px;font-weight:600;cursor:pointer;width:100%}
+
+    @media (max-width:900px){
+      .container{flex-direction:column;align-items:center;text-align:center}
+      .left{padding:0;margin-bottom:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="container">
+      <div class="left">
+        <h1>facebook</h1>
+        <p>Connect with friends and the world around you on Facebook.</p>
+      </div>
+      <div class="right">
+        <div class="card">
+          <form onsubmit="return false">
+            <div class="input"><input type="text" id="loginEmail" placeholder="Email or phone number" required></div>
+            <div class="input"><input type="password" id="loginPass" placeholder="Password" required></div>
+            <button class="btn btn-login" onclick="fakeLogin()">Log In</button>
+          </form>
+          <div class="forgot"><a href="#">Forgotten password?</a></div>
+          <div class="divider"></div>
+          <button class="btn btn-create" id="openSignup">Create new account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup popup -->
+  <div class="signup-popup" id="signupPopup">
+    <div class="signup-card">
+      <button class="close" id="closeSignup">×</button>
+      <h2>Sign Up</h2>
+      <p>It's quick and easy.</p>
+      <form id="signupForm" onsubmit="return false">
+        <div class="row">
+          <input type="text" id="firstName" placeholder="First name" required>
+          <input type="text" id="lastName" placeholder="Surname" required>
+        </div>
+        <input type="text" id="contact" placeholder="Mobile number or email" required>
+        <input type="password" id="newPass" placeholder="New password" required>
+        <label style="font-size:13px;color:var(--muted)">Birthday</label>
+        <div class="row">
+          <select id="bdayDay"><option value="">Day</option></select>
+          <select id="bdayMonth"><option value="">Month</option></select>
+          <select id="bdayYear"><option value="">Year</option></select>
+        </div>
+        <label style="font-size:13px;color:var(--muted)">Gender</label>
+        <div class="gender">
+          <label>Female<input type="radio" name="gender" value="female"></label>
+          <label>Male<input type="radio" name="gender" value="male"></label>
+          <label>Custom<input type="radio" name="gender" value="custom"></label>
+        </div>
+        <button class="btn-signup" id="submitSignup">Sign Up</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const signupPopup=document.getElementById('signupPopup');
+    const openSignup=document.getElementById('openSignup');
+    const closeSignup=document.getElementById('closeSignup');
+    openSignup.onclick=(e)=>{e.preventDefault();signupPopup.style.display='flex';document.getElementById('firstName').focus()};
+    closeSignup.onclick=()=>signupPopup.style.display='none';
+    window.onclick=(e)=>{if(e.target===signupPopup)signupPopup.style.display='none'};
+    function fakeLogin(){alert('Demo login – no backend connected.');}
+    document.getElementById('submitSignup').onclick=(e)=>{e.preventDefault();alert('Demo account created.');signupPopup.style.display='none'};
+
+    // populate date options
+    (function(){
+      const d=document.getElementById('bdayDay'),m=document.getElementById('bdayMonth'),y=document.getElementById('bdayYear');
+      for(let i=1;i<=31;i++){d.innerHTML+='<option>'+i+'</option>'}
+      const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      months.forEach((mo,i)=>m.innerHTML+='<option value="'+(i+1)+'">'+mo+'</option>');
+      const cy=new Date().getFullYear();
+      for(let yy=cy;yy>=1905;yy--){y.innerHTML+='<option>'+yy+'</option>'}
+    })();
+  </script>
+</body>
+</html>
